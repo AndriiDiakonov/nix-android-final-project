@@ -1,4 +1,4 @@
-package com.nix.summer.final_project.adapters
+package com.nix.summer.final_project.ui.adapters
 
 class Contract {
 
