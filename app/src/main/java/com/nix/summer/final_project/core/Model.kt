@@ -1,40 +1,14 @@
-package com.nix.summer.final_project
+package com.nix.summer.final_project.core
 
-//  Recipe coffee.
-enum class Coffee(val water: Int, val coffeeBeans: Int, val milk: Int, val money: Int) {
-    ESPRESSO(250, 16, 0, 4),
-    LATTE(350, 20, 75, 7),
-    CAPPUCCINO(200, 12, 100, 6);
-}
+import com.nix.summer.final_project.core.entities.Coffee
+import com.nix.summer.final_project.core.entities.Order
+import com.nix.summer.final_project.core.entities.Resources
+import com.nix.summer.final_project.core.entities.Response
 
-//  Order - Types of coffee.
-data class Order(val choice: String)
-
-//  Resources - Adding resources or withdrawing cash.
-data class Resources(
-    val water: Int = 400,
-    val milk: Int = 540,
-    val coffeeBeans: Int = 120,
-    val cups: Int = 9,
-    val money: Int = 550) {
-    data class ChangeRes(
-        var water: Int = 0,
-        var milk: Int = 0,
-        var coffeeBeans: Int = 0,
-        var cups: Int = 0,
-        var money: Int= 0
-    )
-}
-
-//  Response - date class text outputs.
-data class Response(val notify: String)
-
-//  The class responsible for the logic of the program.
 class Model {
-    //  Initialization of date classes.
+
     private val res = Resources.ChangeRes()
 
-    // Setting default values.
     fun setData() {
         val resources = Resources()
         res.water = resources.water
@@ -44,7 +18,6 @@ class Model {
         res.money = resources.money
     }
 
-    //  Forming the output of information about the remains in the coffee machine.
     fun coffeeMachineRemaining (): String {
         return "${res.water} of water\n" +
                 "${res.milk} of milk\n" +
@@ -53,7 +26,6 @@ class Model {
                 "${res.money} of money"
     }
 
-    //  Buying instructions.
     fun buy(order: Order): Response {
         var response = Response("")
         if (order.choice == "1" || order.choice == "2" || order.choice == "3" || order.choice == "back") {
@@ -77,7 +49,6 @@ class Model {
         return response
     }
 
-    //  Logic for calculating resources and displaying information about them.
     private fun makeCoffee(coffeeType: Coffee): Response {
         if (coffeeType.water > res.water) {
             return Response("Sorry, not enough water!")
@@ -97,7 +68,6 @@ class Model {
         }
     }
 
-    // Filling Resources.
     fun fill(resources: Resources.ChangeRes): Response {
         res.water += resources.water
         res.milk += resources.milk
@@ -106,7 +76,6 @@ class Model {
         return Response("Resources replenished.")
     }
 
-    //  Issuance of money.
     fun take(): Response {
         val response = Response("I gave you ${res.money}")
         res.money = 0
