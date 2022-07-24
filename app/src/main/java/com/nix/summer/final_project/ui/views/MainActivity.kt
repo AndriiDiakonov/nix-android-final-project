@@ -1,4 +1,4 @@
-package com.nix.summer.final_project.ui
+package com.nix.summer.final_project.ui.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,17 +7,23 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.nix.summer.final_project.*
-import com.nix.summer.final_project.adapters.Contract
-import com.nix.summer.final_project.adapters.MainPresenter
+import com.nix.summer.final_project.ui.adapters.Contract
 
-import com.nix.summer.final_project.core.Model
 import com.nix.summer.final_project.core.entities.Order
 import com.nix.summer.final_project.core.entities.Resources
+import com.nix.summer.final_project.core.interactors.*
+import com.nix.summer.final_project.data.repositories.FakeActionRepositoryImplementation
+import com.nix.summer.final_project.ui.adapters.MainPresenter
 
 class MainActivity : AppCompatActivity(), Contract.View {
 
-    private val model = Model()
-    override var presenter = MainPresenter(model)
+    override var presenter = MainPresenter(
+        mBuy = BuyCoffeeInteractor(FakeActionRepositoryImplementation()),
+        mFill = FillResourcesInteractor(FakeActionRepositoryImplementation()),
+        mInfo = ShowResourcesInteractor(FakeActionRepositoryImplementation()),
+        mTake = TakeMoneyInteractor(FakeActionRepositoryImplementation()),
+        mSet = SetResourcesInteractor(FakeActionRepositoryImplementation())
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +64,7 @@ class MainActivity : AppCompatActivity(), Contract.View {
             } else if (disposableCupsInput.text?.toString()?.trim()?.equals("")!!) {
                 Toast.makeText(this, R.string.enter_disposable_cups, Toast.LENGTH_SHORT).show()
             } else {
-                    val resources = Resources.ChangeRes(
+                    val resources = Resources(
                         water = waterInput.text.toString().trim().toInt(),
                         milk = milkInput.text.toString().trim().toInt(),
                         coffeeBeans = coffeeBeansInput.text.toString().trim().toInt(),
