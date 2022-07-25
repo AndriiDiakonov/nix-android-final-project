@@ -13,7 +13,10 @@ import com.nix.summer.final_project.core.entities.Order
 import com.nix.summer.final_project.core.entities.Resources
 import com.nix.summer.final_project.core.entities.Response
 import com.nix.summer.final_project.core.interactors.*
+import com.nix.summer.final_project.data.database.Database
+import com.nix.summer.final_project.data.mappers.DatabasePaymentToPaymentMapper
 import com.nix.summer.final_project.data.mappers.NetworkPaymentToPaymentMapper
+import com.nix.summer.final_project.data.mappers.PaymentToDatabasePaymentMapper
 import com.nix.summer.final_project.data.network.Network
 import com.nix.summer.final_project.data.repositories.FakeActionRepositoryImplementation
 import com.nix.summer.final_project.data.repositories.PaymentRepositoryImplementation
@@ -26,7 +29,10 @@ class MainActivity : AppCompatActivity(), Contract.View {
 
         val repository = PaymentRepositoryImplementation(
             Network.api,
-            NetworkPaymentToPaymentMapper()
+            NetworkPaymentToPaymentMapper(),
+            Database.provideDao(baseContext),
+            DatabasePaymentToPaymentMapper(),
+            PaymentToDatabasePaymentMapper()
         )
 
         MainPresenter(
@@ -35,7 +41,8 @@ class MainActivity : AppCompatActivity(), Contract.View {
             mInfo = ShowResourcesInteractor(FakeActionRepositoryImplementation()),
             mTake = TakeMoneyInteractor(FakeActionRepositoryImplementation()),
             mSet = SetResourcesInteractor(FakeActionRepositoryImplementation()),
-            exchangeCurrencyInteractor = ExchangeCurrencyInteractor(repository)
+            exchangeCurrencyInteractor = ExchangeCurrencyInteractor(repository),
+            loadPaymentInteractor = LoadPaymentInteractor(repository)
         )
     }
 
@@ -47,6 +54,10 @@ class MainActivity : AppCompatActivity(), Contract.View {
         buy()
         fill()
         take()
+    }
+
+    override fun paymentLoad() {
+        presenter.loadPayment()
     }
 
     private fun checkSwitch(): String {

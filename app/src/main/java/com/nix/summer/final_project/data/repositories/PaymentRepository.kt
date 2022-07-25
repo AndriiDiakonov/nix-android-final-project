@@ -6,4 +6,7 @@ interface PaymentRepository {
 
     suspend fun makeNetworkExchange(payment: Payment): Payment
 
+    fun savePayment(payment: Payment)
+
+    fun loadPayment(): Payment?
 }
