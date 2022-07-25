@@ -13,6 +13,7 @@ class ExchangeCurrencyInteractor(private val repository: PaymentRepository) {
             payment
         }
         return with(exchangedPayment) {
+            repository.savePayment(exchangedPayment)
             Response(
                 notify = "You payed $amount $currency"
             )
